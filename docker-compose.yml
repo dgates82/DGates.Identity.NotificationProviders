@@ -46,3 +46,15 @@ services:
       interval: 5s
       timeout: 5s
       retries: 10
+
+  postmarkmock:
+    build:
+      context: docker/postmark-mock
+    container_name: notification-providers-postmarkmock
+    ports:
+      - "3050:3050" # Postmark-compatible REST API, used by PostmarkMockClient in tests
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:3050/health"]
+      interval: 5s
+      timeout: 5s
+      retries: 10

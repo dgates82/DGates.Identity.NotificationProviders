@@ -32,7 +32,9 @@ public class PostMarkEmailSender : IEmailSender
         _logger.LogDebug($"SendMailAsync | toEmail: {toEmail} | subject: {subject} | message: {message}");
         _logger.LogDebug($"options: {_options.ToJson()}");
 
-        var client = new PostmarkClient(_options.Value.ApiKey);
+        var client = string.IsNullOrEmpty(_options.Value.BaseUrlOverride)
+            ? new PostmarkClient(_options.Value.ApiKey)
+            : new PostmarkClient(_options.Value.ApiKey, _options.Value.BaseUrlOverride);
         var from = _options.Value.FromAddress;
 
         var msg = new PostmarkMessage
