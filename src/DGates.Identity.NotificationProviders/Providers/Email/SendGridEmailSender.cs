@@ -11,10 +11,8 @@ using SendGrid.Helpers.Mail;
 namespace DGates.Identity.NotificationProviders.Providers.Email
 {
     /// <summary>
-    /// Alternate <see cref="IEmailSender"/> implementation using SendGrid. Not
-    /// wired up by default (see the commented-out <c>AddSendGridEmailSender</c>
-    /// call in <c>Program.cs</c>); swap in for <see cref="SmtpEmailSender"/>
-    /// when a real transactional-email provider is needed.
+    /// <see cref="IEmailSender"/> implementation using SendGrid, for a real
+    /// transactional-email provider instead of plain SMTP.
     /// </summary>
     public class SendGridEmailSender : IEmailSender
     {

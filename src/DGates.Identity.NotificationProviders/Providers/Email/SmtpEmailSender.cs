@@ -11,10 +11,9 @@ using System.Net.Mail;
 namespace DGates.Identity.NotificationProviders.Providers.Email
 {
     /// <summary>
-    /// Default <see cref="IEmailSender"/> implementation, sending mail over SMTP.
-    /// Configured out of the box to point at the Mailpit container from
-    /// <c>docker-compose.yml</c>, so a fresh clone has a working email path with
-    /// no external account or API key.
+    /// <see cref="IEmailSender"/> implementation that sends mail over plain SMTP -
+    /// works with any SMTP server, real or local (e.g. Mailpit, used by this
+    /// repo's own <c>docker-compose.yml</c> for integration tests).
     /// </summary>
     public class SmtpEmailSender : IEmailSender
     {

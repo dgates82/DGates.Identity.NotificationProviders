@@ -11,7 +11,7 @@ using Microsoft.Extensions.Options;
 namespace DGates.Identity.NotificationProviders.Providers.Sms;
 
 /// <summary>
-/// Alternate <see cref="ISmsSender"/> implementation, sending SMS via AWS SNS.
+/// <see cref="ISmsSender"/> implementation, sending SMS via AWS SNS.
 /// </summary>
 public class SnsSmsSender : ISmsSender
 {

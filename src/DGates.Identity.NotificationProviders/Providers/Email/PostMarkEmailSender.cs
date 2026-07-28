@@ -10,10 +10,8 @@ using PostmarkDotNet;
 namespace DGates.Identity.NotificationProviders.Providers.Email;
 
 /// <summary>
-/// Alternate <see cref="IEmailSender"/> implementation using Postmark. Not
-/// wired up by default (see the commented-out <c>AddPostMarkEmailSender</c>
-/// call in <c>Program.cs</c>); swap in for <see cref="SmtpEmailSender"/> when
-/// a real transactional-email provider is needed.
+/// <see cref="IEmailSender"/> implementation using Postmark, for a real
+/// transactional-email provider instead of plain SMTP.
 /// </summary>
 public class PostMarkEmailSender : IEmailSender
 {

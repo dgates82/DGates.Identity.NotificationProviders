@@ -10,8 +10,7 @@ using Twilio.Rest.Api.V2010.Account;
 namespace DGates.Identity.NotificationProviders.Providers.Sms;
 
 /// <summary>
-/// Default <see cref="ISmsSender"/> implementation, sending SMS via Twilio.
-/// Used for the SMS-based 2FA delivery method.
+/// <see cref="ISmsSender"/> implementation, sending SMS via Twilio.
 /// </summary>
 public class TwilioSmsSender : ISmsSender
 {
