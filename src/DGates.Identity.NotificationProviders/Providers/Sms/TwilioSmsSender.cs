@@ -32,7 +32,7 @@ public class TwilioSmsSender : ISmsSender
     /// message is redirected there instead, with the original recipient
     /// appended to the message body.
     /// </summary>
-    public Task SendSmsAsync(string number, string message)
+    public Task SendSmsAsync(string number, string message, CancellationToken cancellationToken = default)
     {
         _logger.LogDebug($"SendSmsAsync | number: {number} | message: {message}");
 
@@ -60,11 +60,13 @@ public class TwilioSmsSender : ISmsSender
         
         _logger.LogDebug($"SendSmsAsync | Final Message: {message}");
         
+        // The Twilio SDK has no CancellationToken overload, so this can only abandon the
+        // wait on cancellation, not actually cancel the outbound request.
         return MessageResource.CreateAsync(
             body: message,
             from: new Twilio.Types.PhoneNumber(_options.Value.FromNumber),
             to: new Twilio.Types.PhoneNumber(finalNumber)
-        );
+        ).WaitAsync(cancellationToken);
 
     }
 
