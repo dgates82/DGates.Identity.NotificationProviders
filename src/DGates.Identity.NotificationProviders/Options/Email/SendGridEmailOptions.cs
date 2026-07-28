@@ -1,4 +1,6 @@
-﻿namespace DGates.Identity.NotificationProviders.Options.Email
+﻿using Newtonsoft.Json;
+
+namespace DGates.Identity.NotificationProviders.Options.Email
 {
     /// <summary>Configuration for <see cref="Providers.Email.SendGridEmailSender"/>, bound from the <see cref="ConfigSection"/> config section.</summary>
     public class SendGridEmailOptions
@@ -7,6 +9,7 @@
         public const string ConfigSection = "SendGridEmailConfigs";
 
         /// <summary>The SendGrid API key.</summary>
+        [JsonIgnore]
         public required string ApiKey { get; set; }
 
         /// <summary>The "From" address for outgoing emails.</summary>

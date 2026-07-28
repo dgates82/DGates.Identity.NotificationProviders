@@ -4,9 +4,10 @@ namespace DGates.Identity.NotificationProviders.Abstractions;
 public interface ISmsSender
 {
     /// <summary>
-    /// Sends <paramref name="message"/> to <paramref name="number"/>. Implementations should
-    /// throw on delivery failure rather than fail silently, so callers see consistent behavior
-    /// regardless of which registered <see cref="ISmsSender"/> they're using.
+    /// Sends <paramref name="message"/> to <paramref name="number"/>, returning the provider's
+    /// message ID. Implementations should throw on delivery failure rather than fail silently,
+    /// so callers see consistent behavior regardless of which registered <see cref="ISmsSender"/>
+    /// they're using.
     /// </summary>
-    public Task SendSmsAsync(string number, string message, CancellationToken cancellationToken = default);
+    public Task<string> SendSmsAsync(string number, string message, CancellationToken cancellationToken = default);
 }

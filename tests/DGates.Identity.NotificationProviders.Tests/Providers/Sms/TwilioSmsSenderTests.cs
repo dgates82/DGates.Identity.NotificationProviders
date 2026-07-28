@@ -44,15 +44,7 @@ public class TwilioSmsSenderTests
     {
         await _smsMock.DeleteAllMessagesAsync();
         const string overrideRecipient = "+15555550199";
-        var options = Microsoft.Extensions.Options.Options.Create(new TwilioSmsOptions
-        {
-            AccountSid = "ACtest",
-            AuthToken = "test",
-            FromNumber = "+15555550100",
-            BaseUrlOverride = "http://localhost:3030",
-            OverrideRecipient = overrideRecipient
-        });
-        var sender = new TwilioSmsSender(options, NullLogger<TwilioSmsSender>.Instance);
+        var sender = new OverrideRecipientSmsSender(_sender, overrideRecipient);
         var originalNumber = "+1555555" + Random.Shared.Next(1000, 9999);
 
         await sender.SendSmsAsync(originalNumber, "Test message");

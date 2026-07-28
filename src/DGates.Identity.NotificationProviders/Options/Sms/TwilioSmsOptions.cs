@@ -1,3 +1,5 @@
+using Newtonsoft.Json;
+
 namespace DGates.Identity.NotificationProviders.Options.Sms;
 
 /// <summary>Configuration for <see cref="Providers.Sms.TwilioSmsSender"/>, bound from the <see cref="ConfigSection"/> config section.</summary>
@@ -10,6 +12,7 @@ public class TwilioSmsOptions
     public required string AccountSid { get; set; }
 
     /// <summary>The Twilio auth token.</summary>
+    [JsonIgnore]
     public required string AuthToken { get; set; }
 
     /// <summary>The Twilio phone number to send SMS from.</summary>

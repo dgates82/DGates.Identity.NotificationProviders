@@ -1,4 +1,6 @@
-﻿namespace DGates.Identity.NotificationProviders.Options.Email
+﻿using Newtonsoft.Json;
+
+namespace DGates.Identity.NotificationProviders.Options.Email
 {
     /// <summary>Configuration for <see cref="Providers.Email.SmtpEmailSender"/>, bound from the <see cref="ConfigSection"/> config section.</summary>
     public class SmtpEmailOptions
@@ -10,7 +12,7 @@
         public required string Host { get; set; }
 
         /// <summary>The SMTP server port.</summary>
-        public required string Port { get; set; }
+        public required int Port { get; set; }
 
         /// <summary>The "From" address for outgoing emails.</summary>
         public required string FromAddress { get; set; }
@@ -22,6 +24,7 @@
         public string UserName { get; set; } = "";
 
         /// <summary>The SMTP auth password, used only when <see cref="UserName"/> is set.</summary>
+        [JsonIgnore]
         public string Password { get; set; } = "";
 
         /// <summary>Whether to use SSL/TLS for the SMTP connection.</summary>

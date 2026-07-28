@@ -25,38 +25,25 @@ public class SnsSmsSender : ISmsSender
         _logger = logger;
     }
 
-    /// <summary>
-    /// Sends an SMS via AWS SNS. If
-    /// <see cref="SnsSmsOptions.OverrideRecipient"/> is configured, the
-    /// message is redirected there instead, with the original recipient
-    /// appended to the message body.
-    /// </summary>
-    public async Task SendSmsAsync(string number, string message, CancellationToken cancellationToken = default)
+    /// <summary>Sends an SMS via AWS SNS, returning the SNS message ID.</summary>
+    public async Task<string> SendSmsAsync(string number, string message, CancellationToken cancellationToken = default)
     {
         _logger.LogDebug($"SendSmsAsync | number: {number} | message: {message}");
-
-        var finalNumber = !string.IsNullOrEmpty(_options.Value.OverrideRecipient) ? _options.Value.OverrideRecipient : number;
-
-        if (!string.IsNullOrEmpty(_options.Value.OverrideRecipient))
-        {
-            message += $" - Original Recipient: {number}";
-        }
-
-        _logger.LogDebug($"SendSmsAsync | Final Number: {finalNumber}");
-        _logger.LogDebug($"SendSmsAsync | Final Message: {message}");
 
         using var client = CreateClient();
 
         var request = new PublishRequest
         {
-            PhoneNumber = finalNumber,
+            PhoneNumber = number,
             Message = message,
             MessageAttributes = BuildMessageAttributes()
         };
 
         var response = await client.PublishAsync(request, cancellationToken);
 
-        _logger.LogInformation($"Message sent to {finalNumber}, MessageId: {response.MessageId}");
+        _logger.LogInformation($"Message sent to {number}, MessageId: {response.MessageId}");
+
+        return response.MessageId;
     }
 
     private IAmazonSimpleNotificationService CreateClient()
@@ -100,11 +87,16 @@ public class SnsSmsSender : ISmsSender
 /// <summary>Registers <see cref="SnsSmsSender"/> as the <see cref="ISmsSender"/> implementation.</summary>
 public static class SnsSmsSenderServiceCollectionExtensions
 {
-    /// <summary>Binds <see cref="SnsSmsOptions"/> from configuration and registers <see cref="SnsSmsSender"/>.</summary>
+    /// <summary>Binds <see cref="SnsSmsOptions"/> from configuration and registers <see cref="SnsSmsSender"/>, wrapped with <see cref="OverrideRecipientSmsSender"/>.</summary>
     public static IServiceCollection AddSnsSmsSender(this IServiceCollection services, IConfiguration configuration)
     {
         services.Configure<SnsSmsOptions>(configuration.GetSection(SnsSmsOptions.ConfigSection));
-        services.AddTransient<ISmsSender, SnsSmsSender>();
+        services.AddTransient<ISmsSender>(sp =>
+        {
+            var options = sp.GetRequiredService<IOptions<SnsSmsOptions>>();
+            var inner = new SnsSmsSender(options, sp.GetRequiredService<ILogger<SnsSmsSender>>());
+            return new OverrideRecipientSmsSender(inner, options.Value.OverrideRecipient);
+        });
         return services;
     }
 }

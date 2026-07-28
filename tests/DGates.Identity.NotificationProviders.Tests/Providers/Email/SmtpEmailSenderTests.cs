@@ -17,7 +17,7 @@ public class SmtpEmailSenderTests
         var options = Microsoft.Extensions.Options.Options.Create(new SmtpEmailOptions
         {
             Host = "localhost",
-            Port = "1025",
+            Port = 1025,
             FromAddress = "sender@notification-providers.test",
             EnableSsl = false
         });
@@ -43,15 +43,7 @@ public class SmtpEmailSenderTests
     {
         await _mailpit.DeleteAllMessagesAsync();
         const string overrideRecipient = "override@notification-providers.test";
-        var options = Microsoft.Extensions.Options.Options.Create(new SmtpEmailOptions
-        {
-            Host = "localhost",
-            Port = "1025",
-            FromAddress = "sender@notification-providers.test",
-            EnableSsl = false,
-            OverrideRecipient = overrideRecipient
-        });
-        var sender = new SmtpEmailSender(NullLogger<SmtpEmailSender>.Instance, options);
+        var sender = new OverrideRecipientEmailSender(_sender, overrideRecipient);
         var originalRecipient = $"{Guid.NewGuid()}@notification-providers.test";
         var subject = $"Test Subject {Guid.NewGuid()}";
 

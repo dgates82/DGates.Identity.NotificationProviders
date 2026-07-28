@@ -1,3 +1,5 @@
+using Newtonsoft.Json;
+
 namespace DGates.Identity.NotificationProviders.Options.Sms;
 
 /// <summary>Configuration for <see cref="Providers.Sms.SnsSmsSender"/>, bound from the <see cref="ConfigSection"/> config section.</summary>
@@ -17,6 +19,7 @@ public class SnsSmsOptions
     public string AccessKey { get; set; } = "";
 
     /// <summary>Static AWS secret key, paired with <see cref="AccessKey"/>. Ignored when <see cref="AccessKey"/> is empty.</summary>
+    [JsonIgnore]
     public string SecretKey { get; set; } = "";
 
     /// <summary>

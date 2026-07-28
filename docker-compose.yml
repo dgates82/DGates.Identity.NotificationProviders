@@ -29,3 +29,8 @@ services:
     container_name: notification-providers-smsmock
     ports:
       - "3030:3030" # web UI + Twilio-compatible REST API, used by SmsMockClient in tests
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:3030/health"]
+      interval: 5s
+      timeout: 5s
+      retries: 10

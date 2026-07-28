@@ -21,61 +21,41 @@ public class PostMarkEmailSender : IEmailSender
 
     readonly IOptions<PostMarkEmailOptions> _options;
 
-    private bool IsOverrideRecipient => !string.IsNullOrEmpty(_options.Value.OverrideRecipient);
-    private string OverrideRecipient => _options.Value.OverrideRecipient;
-
     /// <summary>Creates the sender with its injected logger and Postmark configuration options.</summary>
-    public PostMarkEmailSender(ILogger<SmtpEmailSender> logger, IOptions<PostMarkEmailOptions> options)
+    public PostMarkEmailSender(ILogger<PostMarkEmailSender> logger, IOptions<PostMarkEmailOptions> options)
     {
         _logger = logger;
         _options = options;
     }
 
-    /// <summary>
-    /// Sends an HTML email via the Postmark API. If
-    /// <see cref="PostMarkEmailOptions.OverrideRecipient"/> is configured, the
-    /// email is redirected there instead, with the original recipient appended
-    /// to the subject line.
-    /// </summary>
+    /// <summary>Sends an HTML email via the Postmark API.</summary>
     public async Task SendEmailAsync(string toEmail, string subject, string message)
     {
         _logger.LogDebug($"SendMailAsync | toEmail: {toEmail} | subject: {subject} | message: {message}");
         _logger.LogDebug($"options: {_options.ToJson()}");
-        try
+
+        var client = new PostmarkClient(_options.Value.ApiKey);
+        var from = _options.Value.FromAddress;
+
+        var msg = new PostmarkMessage
         {
+            From = from,
+            To = toEmail,
+            TrackOpens = true,
+            Subject = subject,
+            HtmlBody = message
+        };
 
+        var response = await client.SendMessageAsync(msg);
 
-            var client = new PostmarkClient(_options.Value.ApiKey);
-            var from = _options.Value.FromAddress;
-
-            var testSubject = IsOverrideRecipient ? $" - Original Recipient: {toEmail}" : "";
-            var finalSubject = $"{subject}{testSubject}";
-
-            var finalRecipient = IsOverrideRecipient ? OverrideRecipient : toEmail;
-
-            var msg = new PostmarkMessage
-            {
-                From = from,
-                To = finalRecipient,
-                TrackOpens = true,
-                Subject = finalSubject,
-                HtmlBody = message
-            };
-
-            var response = await client.SendMessageAsync(msg);
-
-            if (response.Status == PostmarkStatus.Success)
-            {
-                _logger.LogInformation($"Message sent to {finalRecipient}");
-            }
-            else
-            {
-                _logger.LogError($"Error sending message to {finalRecipient}");
-            }
+        if (response.Status == PostmarkStatus.Success)
+        {
+            _logger.LogInformation($"Message sent to {toEmail}");
         }
-        catch (Exception ex)
+        else
         {
-            _logger.LogError(ex, $"Error sending email to {toEmail}");
+            _logger.LogError($"Error sending message to {toEmail}: {response.Message}");
+            throw new InvalidOperationException($"Postmark send failed for {toEmail}: {response.Message}");
         }
     }
 }
@@ -83,11 +63,16 @@ public class PostMarkEmailSender : IEmailSender
 /// <summary>Registers <see cref="PostMarkEmailSender"/> as the <see cref="IEmailSender"/> implementation.</summary>
 public static class PostMarkEmailSenderServiceCollectionExtensions
 {
-    /// <summary>Binds <see cref="PostMarkEmailOptions"/> from configuration and registers <see cref="PostMarkEmailSender"/>.</summary>
+    /// <summary>Binds <see cref="PostMarkEmailOptions"/> from configuration and registers <see cref="PostMarkEmailSender"/>, wrapped with <see cref="OverrideRecipientEmailSender"/>.</summary>
     public static IServiceCollection AddPostMarkEmailSender(this IServiceCollection services, IConfiguration configuration)
     {
         services.Configure<PostMarkEmailOptions>(configuration.GetSection(PostMarkEmailOptions.ConfigSection));
-        services.AddTransient<IEmailSender, PostMarkEmailSender>();
+        services.AddTransient<IEmailSender>(sp =>
+        {
+            var options = sp.GetRequiredService<IOptions<PostMarkEmailOptions>>();
+            var inner = new PostMarkEmailSender(sp.GetRequiredService<ILogger<PostMarkEmailSender>>(), options);
+            return new OverrideRecipientEmailSender(inner, options.Value.OverrideRecipient);
+        });
         return services;
     }
 }
