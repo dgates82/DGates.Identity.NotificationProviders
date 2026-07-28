@@ -5,14 +5,32 @@ services:
     ports:
       - "4566:4566"   # LocalStack edge port (all services)
     environment:
-      - SERVICES=s3
+      - SERVICES=sns
       - DEBUG=0
     volumes:
       - "./docker/localstack-data:/var/lib/localstack"
       - "/var/run/docker.sock:/var/run/docker.sock"
-      - "./docker/seed.sh:/etc/localstack/init/ready.d/seed.sh"
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:4566/_localstack/health"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  mailpit:
+    image: axllent/mailpit:latest
+    container_name: notification-providers-mailpit
+    ports:
+      - "1025:1025" # SMTP
+      - "8025:8025" # web UI + REST API, used by MailpitClient in tests
+
+  smsmock:
+    build:
+      context: docker/sms-mock
+    container_name: notification-providers-smsmock
+    ports:
+      - "3030:3030" # web UI + Twilio-compatible REST API, used by SmsMockClient in tests
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:3030/health"]
       interval: 5s
       timeout: 5s
       retries: 10
