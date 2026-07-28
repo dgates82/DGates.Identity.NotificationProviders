@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace ExampleLibrary.Validation;
+namespace DGates.Identity.NotificationProviders.Validation;
 
 /// <summary>
 /// Represents the outcome of validating a <see cref="Note"/>.

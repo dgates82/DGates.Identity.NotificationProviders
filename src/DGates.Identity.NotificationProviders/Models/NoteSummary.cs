@@ -1,6 +1,6 @@
 using System;
 
-namespace ExampleLibrary.Models;
+namespace DGates.Identity.NotificationProviders.Models;
 
 /// <summary>
 /// Represents a lightweight view of a <see cref="Note"/>, omitting the body content.

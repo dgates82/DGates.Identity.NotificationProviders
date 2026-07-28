@@ -8,7 +8,7 @@
 
         <!-- NuGet package metadata — all values below are placeholders.
              TODO(template): update PackageId, Authors, Description, and RepositoryUrl for your project. -->
-        <PackageId>ExampleLibrary</PackageId>
+        <PackageId>DGates.Identity.NotificationProviders</PackageId>
         <Authors>Your Name</Authors>
         <Description>Example library demonstrating this template's CI/CD and release pipeline.</Description>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
@@ -19,7 +19,7 @@
         <None Include="../../README.md" Pack="true" PackagePath="" />
     </ItemGroup>
     <ItemGroup>
-        <InternalsVisibleTo Include="ExampleLibrary.Tests" />
+        <InternalsVisibleTo Include="DGates.Identity.NotificationProviders.Tests" />
     </ItemGroup>
     <ItemGroup>
       <PackageReference Include="AWSSDK.S3" Version="4.0.101.3" />

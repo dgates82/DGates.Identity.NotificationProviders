@@ -1,6 +1,6 @@
-using ExampleLibrary.Models;
+using DGates.Identity.NotificationProviders.Models;
 
-namespace ExampleLibrary.Storage;
+namespace DGates.Identity.NotificationProviders.Storage;
 
 /// <summary>
 /// Provides persistence operations for <see cref="Note"/> instances.

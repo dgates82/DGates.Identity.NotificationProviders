@@ -1,7 +1,7 @@
-using ExampleLibrary.Models;
-using ExampleLibrary.Storage;
+using DGates.Identity.NotificationProviders.Models;
+using DGates.Identity.NotificationProviders.Storage;
 
-namespace ExampleLibrary.Tests.Storage;
+namespace DGates.Identity.NotificationProviders.Tests.Storage;
 
 [Trait("Category", "Integration")]
 public class S3NoteStoreTests : IClassFixture<LocalStackFixture>

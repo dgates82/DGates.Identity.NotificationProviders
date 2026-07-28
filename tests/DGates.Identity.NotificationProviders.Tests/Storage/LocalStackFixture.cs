@@ -1,6 +1,6 @@
 using Amazon.S3;
 
-namespace ExampleLibrary.Tests.Storage;
+namespace DGates.Identity.NotificationProviders.Tests.Storage;
 
 public class LocalStackFixture
 {
