@@ -20,7 +20,7 @@ public class S3NoteStoreTests : IClassFixture<LocalStackFixture>
         
         Assert.NotNull(note);
         Assert.Equal("seed-note-1", note!.Id);
-        Assert.Equal("Welcome to DGates.Identity.NotificationProviders", note.Title);
+        Assert.Equal("Welcome to ExampleLibrary", note.Title);
     }
     
     [Fact]
@@ -79,7 +79,7 @@ public class S3NoteStoreTests : IClassFixture<LocalStackFixture>
     {
         var summaries = await _store.ListNotesAsync();
 
-        Assert.Contains(summaries, s => s.Id == "seed-note-1" && s.Title == "Welcome to DGates.Identity.NotificationProviders");
+        Assert.Contains(summaries, s => s.Id == "seed-note-1" && s.Title == "Welcome to ExampleLibrary");
     }
 
     [Fact]
