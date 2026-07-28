@@ -20,7 +20,7 @@
     </ItemGroup>
 
     <ItemGroup>
-            <ProjectReference Include="..\..\src\ExampleLibrary\ExampleLibrary.csproj" />
+            <ProjectReference Include="..\..\src\DGates.Identity.NotificationProviders\DGates.Identity.NotificationProviders.csproj" />
     </ItemGroup>
 
 </Project>

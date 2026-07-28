@@ -1,7 +1,7 @@
 using System.Collections.Generic;
-using ExampleLibrary.Models;
+using DGates.Identity.NotificationProviders.Models;
 
-namespace ExampleLibrary.Validation;
+namespace DGates.Identity.NotificationProviders.Validation;
 
 /// <summary>
 /// Validates <see cref="Note"/> instances against required fields and length constraints.

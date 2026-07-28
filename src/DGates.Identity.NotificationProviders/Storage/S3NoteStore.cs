@@ -3,9 +3,9 @@ using System.Text;
 using System.Text.Json;
 using Amazon.S3;
 using Amazon.S3.Model;
-using ExampleLibrary.Models;
+using DGates.Identity.NotificationProviders.Models;
 
-namespace ExampleLibrary.Storage;
+namespace DGates.Identity.NotificationProviders.Storage;
 
 /// <summary>
 /// An <see cref="INoteStore"/> implementation backed by an S3 bucket. Each note is stored as a

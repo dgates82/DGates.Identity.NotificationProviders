@@ -1,7 +1,7 @@
-using ExampleLibrary.Models;
-using ExampleLibrary.Validation;
+using DGates.Identity.NotificationProviders.Models;
+using DGates.Identity.NotificationProviders.Validation;
 
-namespace ExampleLibrary.Tests.Validation;
+namespace DGates.Identity.NotificationProviders.Tests.Validation;
 
 public class NoteValidatorTests
 {

@@ -1,6 +1,6 @@
 using System;
 
-namespace ExampleLibrary.Models;
+namespace DGates.Identity.NotificationProviders.Models;
 
 /// <summary>
 /// Represents a single note, including its full body content.
