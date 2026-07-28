@@ -1,0 +1,10 @@
+{
+  "name": "notification-providers-sendgrid-mock",
+  "version": "1.0.0",
+  "private": true,
+  "description": "SendGrid-compatible mock mail API for local dev and integration tests, mirroring Mailpit's role for plain SMTP.",
+  "main": "server.js",
+  "dependencies": {
+    "express": "^4.19.2"
+  }
+}

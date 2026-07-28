@@ -38,7 +38,9 @@ namespace DGates.Identity.NotificationProviders.Providers.Email
             _logger.LogDebug($"options: {_options.ToJson()}");
 
             var apiKey = _options.Value.ApiKey;
-            var client = new SendGridClient(apiKey);
+            var client = string.IsNullOrEmpty(_options.Value.BaseUrlOverride)
+                ? new SendGridClient(apiKey)
+                : new SendGridClient(apiKey, host: _options.Value.BaseUrlOverride);
             var from = new EmailAddress(_options.Value.FromAddress, _options.Value.FromName);
 
             var to = new EmailAddress(toEmail);

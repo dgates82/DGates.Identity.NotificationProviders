@@ -34,3 +34,15 @@ services:
       interval: 5s
       timeout: 5s
       retries: 10
+
+  sendgridmock:
+    build:
+      context: docker/sendgrid-mock
+    container_name: notification-providers-sendgridmock
+    ports:
+      - "3040:3040" # SendGrid-compatible REST API, used by SendGridMockClient in tests
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:3040/health"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
