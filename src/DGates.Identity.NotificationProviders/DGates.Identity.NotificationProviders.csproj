@@ -22,6 +22,7 @@
         <InternalsVisibleTo Include="DGates.Identity.NotificationProviders.Tests" />
     </ItemGroup>
     <ItemGroup>
+      <PackageReference Include="AWSSDK.SimpleNotificationService" Version="4.0.100.7" />
       <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="10.0.10" />
       <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
       <PackageReference Include="Postmark" Version="5.4.1" />

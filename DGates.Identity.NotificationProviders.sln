@@ -24,7 +24,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Workflows", "Workflows", "{
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Docker", "Docker", "{59D890A4-9AFE-41EE-BDAE-54B0999BF582}"
 	ProjectSection(SolutionItems) = preProject
-		docker\seed.sh = docker\seed.sh
 		docker-compose.yml = docker-compose.yml
 	EndProjectSection
 EndProject
