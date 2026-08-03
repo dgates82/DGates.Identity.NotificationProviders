@@ -23,12 +23,12 @@ services:
       - "1025:1025" # SMTP
       - "8025:8025" # web UI + REST API, used by MailpitClient in tests
 
-  smsmock:
+  twiliomock:
     build:
-      context: docker/sms-mock
-    container_name: notification-providers-smsmock
+      context: docker/twilio-mock
+    container_name: notification-providers-twiliomock
     ports:
-      - "3030:3030" # web UI + Twilio-compatible REST API, used by SmsMockClient in tests
+      - "3030:3030" # web UI + Twilio-compatible REST API, used by TwilioMockClient in tests
     healthcheck:
       test: ["CMD", "wget", "-qO-", "http://localhost:3030/health"]
       interval: 5s
