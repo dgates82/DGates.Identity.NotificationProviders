@@ -24,8 +24,7 @@ services:
       - "8025:8025" # web UI + REST API, used by MailpitClient in tests
 
   twiliomock:
-    build:
-      context: docker/twilio-mock
+    image: ghcr.io/dgates82/twilio-mock:1.0.0
     container_name: notification-providers-twiliomock
     ports:
       - "3030:3030" # web UI + Twilio-compatible REST API, used by TwilioMockClient in tests
@@ -36,8 +35,7 @@ services:
       retries: 10
 
   sendgridmock:
-    build:
-      context: docker/sendgrid-mock
+    image: ghcr.io/dgates82/sendgrid-mock:1.0.0
     container_name: notification-providers-sendgridmock
     ports:
       - "3040:3040" # web UI + SendGrid-compatible REST API, used by SendGridMockClient in tests
@@ -48,8 +46,7 @@ services:
       retries: 10
 
   postmarkmock:
-    build:
-      context: docker/postmark-mock
+    image: ghcr.io/dgates82/postmark-mock:1.0.0
     container_name: notification-providers-postmarkmock
     ports:
       - "3050:3050" # web UI + Postmark-compatible REST API, used by PostmarkMockClient in tests

@@ -24,7 +24,8 @@ namespace DGates.Identity.NotificationProviders.Options.Email
         /// <summary>
         /// When set, redirects all SendGrid API requests to this URL instead of
         /// api.sendgrid.com - for local dev, point this at a SendGrid-compatible
-        /// mock (e.g. this repo's docker/sendgrid-mock) instead of a real SendGrid account.
+        /// mock (e.g. <see href="https://github.com/dgates82/dgates-mock-servers">dgates-mock-servers</see>'
+        /// sendgrid-mock) instead of a real SendGrid account.
         /// </summary>
         public string BaseUrlOverride { get; set; } = "";
 

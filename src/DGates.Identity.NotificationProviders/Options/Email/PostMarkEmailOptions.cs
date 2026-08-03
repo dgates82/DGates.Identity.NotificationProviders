@@ -21,7 +21,8 @@ public class PostMarkEmailOptions
     /// <summary>
     /// When set, redirects all Postmark API requests to this URL instead of
     /// api.postmarkapp.com - for local dev, point this at a Postmark-compatible
-    /// mock (e.g. this repo's docker/postmark-mock) instead of a real Postmark account.
+    /// mock (e.g. <see href="https://github.com/dgates82/dgates-mock-servers">dgates-mock-servers</see>'
+    /// postmark-mock) instead of a real Postmark account.
     /// </summary>
     public string BaseUrlOverride { get; set; } = "";
 }
