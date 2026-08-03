@@ -12,6 +12,7 @@
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
         <RepositoryUrl>https://github.com/dgates82/DGates.Identity.NotificationProviders</RepositoryUrl>
         <PackageReadmeFile>README.md</PackageReadmeFile>
+        <PackageTags>identity;aspnetcore;email;email-sender;sms;twilio;sendgrid;postmark;aws-sns;dotnet</PackageTags>
     </PropertyGroup>
     <ItemGroup>
         <None Include="../../README.md" Pack="true" PackagePath="" />
