@@ -2,14 +2,14 @@ using System.Text.Json;
 
 namespace DGates.Identity.NotificationProviders.Tests.Infrastructure;
 
-// Thin wrapper over the twillio-sms-mock REST API (docker-compose's smsmock service,
+// Thin wrapper over the twillio-sms-mock REST API (docker-compose's twiliomock service,
 // port 3030) so tests can assert an SMS was actually sent and extract its body - unlike
 // Mailpit, the list endpoint already includes the full message body, no second call needed.
-public class SmsMockClient
+public class TwilioMockClient
 {
     private readonly HttpClient _http;
 
-    public SmsMockClient(string baseUrl = "http://localhost:3030")
+    public TwilioMockClient(string baseUrl = "http://localhost:3030")
     {
         _http = new HttpClient { BaseAddress = new Uri(baseUrl) };
     }

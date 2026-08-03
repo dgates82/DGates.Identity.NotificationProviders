@@ -1,5 +1,5 @@
 # Twilio-compatible mock SMS server for local dev/integration tests (see
-# docker-compose.yml's smsmock service). No published image exists for
+# docker-compose.yml's twiliomock service). No published image exists for
 # twillio-sms-mock, so it's containerized here the same way Mailpit is used
 # pre-built for email.
 FROM node:20-alpine
