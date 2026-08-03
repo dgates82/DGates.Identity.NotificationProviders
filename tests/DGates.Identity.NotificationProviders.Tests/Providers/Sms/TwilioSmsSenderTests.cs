@@ -10,7 +10,7 @@ namespace DGates.Identity.NotificationProviders.Tests.Providers.Sms;
 public class TwilioSmsSenderTests
 {
     private readonly TwilioSmsSender _sender;
-    private readonly SmsMockClient _smsMock = new();
+    private readonly TwilioMockClient _twilioMock = new();
 
     public TwilioSmsSenderTests()
     {
@@ -28,13 +28,13 @@ public class TwilioSmsSenderTests
     [Fact]
     public async Task SendSmsAsync_DeliversMessageToMock()
     {
-        await _smsMock.DeleteAllMessagesAsync();
+        await _twilioMock.DeleteAllMessagesAsync();
         var toNumber = "+1555555" + Random.Shared.Next(1000, 9999);
         var body = $"Test message {Guid.NewGuid()}";
 
         await _sender.SendSmsAsync(toNumber, body);
 
-        var message = await _smsMock.FindMessageToAsync(toNumber, TimeSpan.FromSeconds(10));
+        var message = await _twilioMock.FindMessageToAsync(toNumber, TimeSpan.FromSeconds(10));
         Assert.NotNull(message);
         Assert.Equal(body, message!.Value.GetProperty("body").GetString());
     }
@@ -42,14 +42,14 @@ public class TwilioSmsSenderTests
     [Fact]
     public async Task SendSmsAsync_WithOverrideRecipient_RedirectsAndAppendsOriginalNumberToBody()
     {
-        await _smsMock.DeleteAllMessagesAsync();
+        await _twilioMock.DeleteAllMessagesAsync();
         const string overrideRecipient = "+15555550199";
         var sender = new OverrideRecipientSmsSender(_sender, overrideRecipient);
         var originalNumber = "+1555555" + Random.Shared.Next(1000, 9999);
 
         await sender.SendSmsAsync(originalNumber, "Test message");
 
-        var message = await _smsMock.FindMessageToAsync(overrideRecipient, TimeSpan.FromSeconds(10));
+        var message = await _twilioMock.FindMessageToAsync(overrideRecipient, TimeSpan.FromSeconds(10));
         Assert.NotNull(message);
         Assert.Contains(originalNumber, message!.Value.GetProperty("body").GetString());
     }

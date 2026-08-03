@@ -1,5 +1,5 @@
 {
-  "name": "notification-providers-sms-mock",
+  "name": "notification-providers-twilio-mock",
   "version": "1.0.0",
   "private": true,
   "description": "Twilio-compatible mock SMS server for local dev and integration tests, mirroring Mailpit's role for email.",
