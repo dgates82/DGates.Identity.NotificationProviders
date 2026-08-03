@@ -36,19 +36,19 @@ directly:
 ```json
 { "TwilioSmsConfigs": { "AccountSid": "ACtest", "AuthToken": "test", "FromNumber": "+15555550100", "BaseUrlOverride": "http://localhost:3030" } }
 ```
-**View messages:** `curl http://localhost:3030/api/messages`
+**View messages:** open `http://localhost:3030` in a browser, or `curl http://localhost:3030/api/messages`.
 
 **SendGrid**:
 ```json
 { "SendGridEmailConfigs": { "ApiKey": "test-api-key", "FromAddress": "test@example.com", "FromName": "Test", "BaseUrlOverride": "http://localhost:3040" } }
 ```
-**View messages:** `curl http://localhost:3040/api/messages`
+**View messages:** open `http://localhost:3040` in a browser, or `curl http://localhost:3040/api/messages`.
 
 **Postmark**:
 ```json
 { "PostMarkEmailConfigs": { "ApiKey": "test-api-key", "FromAddress": "test@example.com", "BaseUrlOverride": "http://localhost:3050" } }
 ```
-**View messages:** `curl http://localhost:3050/api/messages`
+**View messages:** open `http://localhost:3050` in a browser, or `curl http://localhost:3050/api/messages`.
 
 None of the three mocks above validate credentials, so any non-empty values work for
 `AccountSid`/`AuthToken`/`ApiKey`.

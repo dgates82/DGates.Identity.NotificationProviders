@@ -40,7 +40,7 @@ services:
       context: docker/sendgrid-mock
     container_name: notification-providers-sendgridmock
     ports:
-      - "3040:3040" # SendGrid-compatible REST API, used by SendGridMockClient in tests
+      - "3040:3040" # web UI + SendGrid-compatible REST API, used by SendGridMockClient in tests
     healthcheck:
       test: ["CMD", "wget", "-qO-", "http://localhost:3040/health"]
       interval: 5s
@@ -52,7 +52,7 @@ services:
       context: docker/postmark-mock
     container_name: notification-providers-postmarkmock
     ports:
-      - "3050:3050" # Postmark-compatible REST API, used by PostmarkMockClient in tests
+      - "3050:3050" # web UI + Postmark-compatible REST API, used by PostmarkMockClient in tests
     healthcheck:
       test: ["CMD", "wget", "-qO-", "http://localhost:3050/health"]
       interval: 5s
