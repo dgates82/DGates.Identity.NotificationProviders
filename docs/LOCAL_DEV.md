@@ -13,8 +13,8 @@ docker compose up -d --wait
 
 This starts five services, all healthchecked before `--wait` returns:
 
-| Service        | Port | Backs                          |
-|----------------|------|---------------------------------|
+| Service        | Port | Backs |
+|----------------|------|-------|
 | `mailpit`      | 1025 (SMTP), 8025 (web UI/API) | `SmtpEmailSender` |
 | `twiliomock`   | 3030 | `TwilioSmsSender` (Twilio-compatible REST API) |
 | `sendgridmock` | 3040 | `SendGridEmailSender` |
@@ -30,23 +30,37 @@ directly:
 ```json
 { "SmtpEmailConfigs": { "Host": "localhost", "Port": 1025, "FromAddress": "test@example.com" } }
 ```
-Open `http://localhost:8025` to see anything sent.
+**View messages:** open `http://localhost:8025` in a browser (Mailpit's web UI).
 
-**Twilio, SendGrid, Postmark** each support a `BaseUrlOverride` that redirects API requests away
-from the real vendor:
+**Twilio** supports `BaseUrlOverride`, redirecting API requests away from the real vendor:
 ```json
 { "TwilioSmsConfigs": { "AccountSid": "ACtest", "AuthToken": "test", "FromNumber": "+15555550100", "BaseUrlOverride": "http://localhost:3030" } }
 ```
-The mocks don't validate credentials, so any non-empty values work. Inspect what was "sent" via
-each mock's `GET /api/messages` (`twiliomock`, `sendgridmock`, `postmarkmock` respectively).
+**View messages:** `curl http://localhost:3030/api/messages`
+
+**SendGrid**:
+```json
+{ "SendGridEmailConfigs": { "ApiKey": "test-api-key", "FromAddress": "test@example.com", "FromName": "Test", "BaseUrlOverride": "http://localhost:3040" } }
+```
+**View messages:** `curl http://localhost:3040/api/messages`
+
+**Postmark**:
+```json
+{ "PostMarkEmailConfigs": { "ApiKey": "test-api-key", "FromAddress": "test@example.com", "BaseUrlOverride": "http://localhost:3050" } }
+```
+**View messages:** `curl http://localhost:3050/api/messages`
+
+None of the three mocks above validate credentials, so any non-empty values work for
+`AccountSid`/`AuthToken`/`ApiKey`.
 
 **AWS SNS** uses `ServiceUrlOverride` plus static test credentials (LocalStack doesn't validate
 them either):
 ```json
 { "SnsSmsConfigs": { "Region": "us-east-1", "AccessKey": "test", "SecretKey": "test", "ServiceUrlOverride": "http://localhost:4566" } }
 ```
-SNS SMS has no real delivery to observe even against LocalStack — inspect what was published via
-LocalStack's own introspection endpoint: `GET http://localhost:4566/_aws/sns/sms-messages`.
+**View messages:** `curl http://localhost:4566/_aws/sns/sms-messages` — SNS SMS has no real
+delivery to observe even against LocalStack, so this is LocalStack's own introspection endpoint
+rather than a mock inbox.
 
 ## Running tests
 
