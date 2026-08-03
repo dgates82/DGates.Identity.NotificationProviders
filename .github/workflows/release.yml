@@ -20,11 +20,11 @@ jobs:
         run: dotnet build --configuration Release --no-restore
       - name: Unit tests
         run: dotnet test --configuration Release --no-build --filter "Category!=Integration"
-      - name: Start LocalStack, Mailpit, and SMS mock
+      - name: Start LocalStack, Mailpit, and provider mocks
         run: docker compose up -d --wait
       - name: Integration tests
         run: dotnet test --configuration Release --no-build --filter "Category=Integration"
-      - name: Stop LocalStack, Mailpit, and SMS mock
+      - name: Stop LocalStack, Mailpit, and provider mocks
         if: always()
         run: docker compose down -v
   publish:
