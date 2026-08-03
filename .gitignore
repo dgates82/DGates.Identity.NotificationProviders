@@ -12,6 +12,7 @@
 .claudeignore
 CLAUDE.md
 NuGet.config
+*.DotSettings.user
 
 # Build results
 [Dd]ebug/
