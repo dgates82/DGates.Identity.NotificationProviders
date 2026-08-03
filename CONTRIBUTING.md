@@ -36,8 +36,11 @@ Thanks for your interest in improving this package. A few guidelines to keep thi
   those tests assert `PublishAsync` succeeded and inspect LocalStack's
   `/_aws/sns/sms-messages` introspection endpoint instead. Don't force both providers into one
   assertion pattern.
-- If your change affects `docker-compose.yml` or any `docker/*-mock` service, confirm the full
-  integration suite still passes against real containers, not just that it builds.
+- If your change affects `docker-compose.yml`, confirm the full integration suite still passes
+  against real containers, not just that it builds. The Twilio/SendGrid/Postmark mocks are
+  pulled from GHCR (`ghcr.io/dgates82/*-mock`, published by
+  [`dgates-mock-servers`](https://github.com/dgates82/dgates-mock-servers)) — if a mock needs a
+  behavior change, that happens upstream in that repo, not here.
 - Update `CHANGELOG.md` under `[Unreleased]` for any user-facing change.
 
 ## Pull requests

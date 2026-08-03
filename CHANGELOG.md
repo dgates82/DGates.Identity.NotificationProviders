@@ -17,7 +17,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   per concrete sender
 - `BaseUrlOverride` (Twilio, SendGrid, Postmark) / `ServiceUrlOverride` (SNS) for redirecting
   API requests to a sandbox or mock instead of the real vendor
-- Hand-rolled local dev/test mocks for Twilio, SendGrid, and Postmark (`docker/*-mock`), plus
+- Local dev/test mocks for Twilio, SendGrid, and Postmark, pulled from
+  [`dgates-mock-servers`](https://github.com/dgates82/dgates-mock-servers) on GHCR, plus
   Mailpit and LocalStack (SNS) via `docker-compose.yml` — usable from local dev, not just tests
 - Integration tests for every provider against real mock backends, plus DI registration tests
   for all five `AddXxxSender()` extension methods
