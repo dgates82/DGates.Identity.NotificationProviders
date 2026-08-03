@@ -21,5 +21,12 @@ namespace DGates.Identity.NotificationProviders.Options.Email
         /// <summary>When set, all emails are redirected here instead of their real recipient, for testing against a real inbox without emailing real users.</summary>
         public string OverrideRecipient { get; set; } = "";
 
+        /// <summary>
+        /// When set, redirects all SendGrid API requests to this URL instead of
+        /// api.sendgrid.com - for local dev, point this at a SendGrid-compatible
+        /// mock (e.g. this repo's docker/sendgrid-mock) instead of a real SendGrid account.
+        /// </summary>
+        public string BaseUrlOverride { get; set; } = "";
+
     }
 }
