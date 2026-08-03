@@ -1,81 +1,120 @@
-# dotnet-nuget-release-template
+# DGates.Identity.NotificationProviders
 
-A GitHub template for packing and publishing multi-target .NET NuGet packages via Trusted
-Publishing (OIDC), with an optional container-based integration testing pattern.
+Drop-in `IEmailSender`/`ISmsSender` providers for ASP.NET Core Identity. Wire up email or SMS
+delivery for password resets, email confirmation, and two-factor codes with one DI call, no
+hand-rolled sender required.
 
-## What's included
+Targets **.NET 10 only** — not compatible with .NET Framework (e.g. net48).
 
-- `.github/workflows/ci.yml` — build and test on every push/PR (unit tests always run;
-  LocalStack-backed integration tests run as part of CI for this template's own example)
-- `.github/workflows/release.yml` — tag-triggered pack and publish to NuGet.org via
-  Trusted Publishing (`NuGet/login@v1`), no API key secrets required
-- `src/ExampleLibrary/` — a small, disposable example library (a "notes" library) demonstrating
-  both a pure unit-tested component (`NoteValidator`) and an integration-tested component
-  (`S3NoteStore`, backed by LocalStack)
-- `tests/ExampleLibrary.Tests/` — unit tests (always run) + integration tests (LocalStack,
-  clearly marked/tagged)
-- `docker-compose.yml` + `docker/seed.sh` — LocalStack setup and seed script used to run the
-  example's integration tests as shipped
+- **Email**: SMTP, SendGrid, Postmark — each implements ASP.NET Core Identity's own
+  `Microsoft.AspNetCore.Identity.UI.Services.IEmailSender`, so they drop straight into Identity
+  with no extra plumbing.
+- **SMS**: Twilio, AWS SNS — both implement this package's own `ISmsSender`. There's no stock
+  SMS-sender contract in ASP.NET Core Identity, so this package defines one, deliberately shaped
+  against two independent backends from the start so it doesn't end up fitting only one vendor.
 
-## How to use this template
+Every provider has its own `IOptions<T>` — no cross-provider coupling, no shared config surface
+you don't need.
 
-1. Click **"Use this template"** at the top of this repo (not Fork) to generate your own
-   repo from this one.
-2. Search the repo for `TODO(template)` — every placeholder and decision point you need to
-   review is marked with it (package metadata, license copyright, `dotnet-version`, and the
-   Mono and LocalStack steps in CI). Working through those markers covers most of the
-   customization below.
-3. Replace `src/ExampleLibrary` (and its test project) with your own library.
-4. Rename `ExampleLibrary` throughout to match your library — the `.csproj` files, `.sln`,
-   `PackageId`, root namespace, and the `ExampleLibrary.Tests` project. Update the project
-   path references inside the `.sln` accordingly.
-5. Configure Trusted Publishing and add the `NUGET_USER` secret — see
-   [Trusted Publishing setup](#trusted-publishing-setup) below.
-6. Push a tag matching `v*` (e.g. `v1.0.0`) to trigger `release.yml` — it packs and publishes
-   automatically. The version in the package comes from the tag itself, not from anything
-   hardcoded in the `.csproj`.
+## Install
 
-## Customizing for your project
+```sh
+dotnet add package DGates.Identity.NotificationProviders
+```
 
-**Target frameworks (`ExampleLibrary.csproj`, `DOTNET_VERSION` in both workflows):**
-`ci.yml`/`release.yml` run `dotnet restore`/`build`/`test`/`pack` generically against whatever
-`<TargetFrameworks>` your `.csproj` declares — adjust that property to whatever frameworks you
-actually target. `DOTNET_VERSION` just needs to be an SDK at least as new as your newest
-target, not an exact match — this repo uses `10.0.x` for `ExampleLibrary`'s `net10.0` target.
+## Usage
 
-**Mono step (`ci.yml`, `release.yml`):** `ExampleLibrary` multi-targets `net48;net10.0` to
-demonstrate the pattern, so as shipped, this repo's own CI installs Mono to host the `net48`
-test run. If your project doesn't target `net48` (or another pre-.NET-Core framework), remove
-the `Setup Mono` step entirely — it's dead weight otherwise.
+Each provider is registered with a single extension method, which binds its own config section
+and registers the sender for DI:
 
-**LocalStack/Docker block (`ci.yml`, `docker-compose.yml`, `docker/seed.sh`):** required for
-this template's own CI, since `S3NoteStoreTests` exercises it directly. Once you replace
-`ExampleLibrary` with your own project, this becomes entirely optional — keep it if your
-package touches an external dependency worth integration-testing, adapt it to a different
-service (any Testcontainers-supported image works the same way), or delete it if it doesn't
-apply.
+```csharp
+builder.Services.AddSmtpEmailSender(builder.Configuration);
+// or: AddSendGridEmailSender / AddPostMarkEmailSender
 
-## Trusted Publishing setup
+builder.Services.AddTwilioSmsSender(builder.Configuration);
+// or: AddSnsSmsSender
+```
 
-1. On [NuGet.org](https://www.nuget.org), go to your account's **Trusted Publishing**
-   settings and add a new trusted publisher, linking it to your GitHub repo, the
-   `release.yml` workflow file, and (optionally) an environment name if you use one.
-2. In your GitHub repo, add a repository secret named `NUGET_USER` containing your NuGet.org
-   profile name — your username, visible in your NuGet.org account settings, not an API key or
-   email address.
-3. No other secrets are needed. `release.yml`'s `publish` job requests `id-token: write`
-   permission and exchanges a short-lived OIDC token for a NuGet API key at publish time via
-   `NuGet/login@v1` — nothing long-lived is stored in the repo.
+Only register one email provider and one SMS provider — the last one registered wins for its
+respective interface.
 
-## Repo hygiene (recommended)
+### Email
 
-This repo protects `main` with a GitHub Ruleset: require a PR before merging, at least 1
-approval, a required status check tied to the CI job, and force-pushes blocked (with the repo
-owner on the bypass list).
+**SMTP** (`SmtpEmailConfigs`):
+```json
+{
+  "SmtpEmailConfigs": {
+    "Host": "smtp.example.com",
+    "Port": 587,
+    "FromAddress": "noreply@example.com",
+    "UserName": "smtp-user",
+    "Password": "smtp-password",
+    "EnableSsl": true
+  }
+}
+```
 
-Worth replicating on your generated repo — but add the Ruleset *after* your first CI run, since
-the required status check needs an existing check run to attach to.
+**SendGrid** (`SendGridEmailConfigs`):
+```json
+{
+  "SendGridEmailConfigs": {
+    "ApiKey": "SG.xxxxx",
+    "FromAddress": "noreply@example.com",
+    "FromName": "Example App"
+  }
+}
+```
+
+**Postmark** (`PostMarkEmailConfigs`):
+```json
+{
+  "PostMarkEmailConfigs": {
+    "ApiKey": "xxxxx",
+    "FromAddress": "noreply@example.com"
+  }
+}
+```
+
+### SMS
+
+**Twilio** (`TwilioSmsConfigs`):
+```json
+{
+  "TwilioSmsConfigs": {
+    "AccountSid": "ACxxxxx",
+    "AuthToken": "xxxxx",
+    "FromNumber": "+15555550100"
+  }
+}
+```
+
+**AWS SNS** (`SnsSmsConfigs`):
+```json
+{
+  "SnsSmsConfigs": {
+    "Region": "us-east-1",
+    "SenderId": "ExampleApp",
+    "SmsType": "Transactional"
+  }
+}
+```
+Uses the default AWS credential chain (IAM role, environment, etc.) unless `AccessKey`/`SecretKey`
+are explicitly set — leave them unset in production.
+
+### Redirecting to a test inbox/phone
+
+Every provider supports `OverrideRecipient`: when set, all messages are redirected there instead
+of their real recipient, with the original recipient appended to the subject (email) or message
+body (SMS). Useful for smoke-testing against production-like config without emailing/texting
+real users.
+
+### Pointing at a sandbox instead of the real vendor
+
+Twilio, SendGrid, Postmark, and SNS all support a base-URL override (`BaseUrlOverride` for
+Twilio/SendGrid/Postmark, `ServiceUrlOverride` for SNS) that redirects API requests away from
+the real vendor endpoint — useful for pointing at a sandbox or mock service of your own instead
+of a live account.
 
 ## License
 
-MIT — see [LICENSE](https://github.com/dgates82/dotnet-nuget-release-template/blob/main/LICENSE).
+MIT — see [LICENSE](https://github.com/dgates82/DGates.Identity.NotificationProviders/blob/main/LICENSE).

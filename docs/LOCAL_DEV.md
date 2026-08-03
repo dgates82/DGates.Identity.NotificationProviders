@@ -1,35 +1,52 @@
-# dotnet-nuget-release-template — Local Development
+# DGates.Identity.NotificationProviders — Local Development
 
-This repo's example library and tests can run entirely without a real AWS account using
-[LocalStack](https://www.localstack.cloud/).
+Every provider in this package can be exercised locally against a fake backend instead of a
+real vendor account — the same containers this repo's own integration tests use. This covers
+running them, pointing a locally-running app at them, and building/testing a local NuGet
+package.
 
-## Setup
+## Starting the mocks
 
-1. Start LocalStack — the notes bucket is created and a starting note is seeded automatically
-   once the container is healthy:
 ```sh
-   docker compose up -d --wait
+docker compose up -d --wait
 ```
 
-2. Tests point `S3NoteStore` at LocalStack via `LocalStackFixture`
-   (`tests/ExampleLibrary.Tests/Storage/LocalStackFixture.cs`):
-```csharp
-   var endpoint = Environment.GetEnvironmentVariable("LOCALSTACK_ENDPOINT") ?? "http://localhost:4566";
+This starts five services, all healthchecked before `--wait` returns:
 
-   var s3Client = new AmazonS3Client(
-       "test",
-       "test",
-       new AmazonS3Config
-       {
-           ServiceURL = endpoint,
-           ForcePathStyle = true,
-           AuthenticationRegion = "us-west-2"
-       });
+| Service        | Port | Backs                          |
+|----------------|------|---------------------------------|
+| `mailpit`      | 1025 (SMTP), 8025 (web UI/API) | `SmtpEmailSender` |
+| `twiliomock`   | 3030 | `TwilioSmsSender` (Twilio-compatible REST API) |
+| `sendgridmock` | 3040 | `SendGridEmailSender` |
+| `postmarkmock` | 3050 | `PostMarkEmailSender` |
+| `localstack`   | 4566 | `SnsSmsSender` (AWS SNS) |
 
-   var store = new S3NoteStore(s3Client, bucketName: "notes-bucket");
+Tear down with `docker compose down -v`.
+
+## Pointing a provider at its mock
+
+**SMTP** needs no override — it's a plain protocol, so just point `Host`/`Port` at Mailpit
+directly:
+```json
+{ "SmtpEmailConfigs": { "Host": "localhost", "Port": 1025, "FromAddress": "test@example.com" } }
 ```
-Works with no setup against the default `docker compose` port mapping. Only set
-`LOCALSTACK_ENDPOINT` if you're pointing at a non-default address.
+Open `http://localhost:8025` to see anything sent.
+
+**Twilio, SendGrid, Postmark** each support a `BaseUrlOverride` that redirects API requests away
+from the real vendor:
+```json
+{ "TwilioSmsConfigs": { "AccountSid": "ACtest", "AuthToken": "test", "FromNumber": "+15555550100", "BaseUrlOverride": "http://localhost:3030" } }
+```
+The mocks don't validate credentials, so any non-empty values work. Inspect what was "sent" via
+each mock's `GET /api/messages` (`twiliomock`, `sendgridmock`, `postmarkmock` respectively).
+
+**AWS SNS** uses `ServiceUrlOverride` plus static test credentials (LocalStack doesn't validate
+them either):
+```json
+{ "SnsSmsConfigs": { "Region": "us-east-1", "AccessKey": "test", "SecretKey": "test", "ServiceUrlOverride": "http://localhost:4566" } }
+```
+SNS SMS has no real delivery to observe even against LocalStack — inspect what was published via
+LocalStack's own introspection endpoint: `GET http://localhost:4566/_aws/sns/sms-messages`.
 
 ## Running tests
 
@@ -37,17 +54,11 @@ Works with no setup against the default `docker compose` port mapping. Only set
 # Unit tests only (no Docker required)
 dotnet test --filter "Category!=Integration"
 
-# Integration tests (requires LocalStack running + seeded, see above)
+# Integration tests (requires the mocks running, see above)
 dotnet test --filter "Category=Integration"
 
 # Everything
 dotnet test
-```
-
-## Tearing down
-
-```sh
-docker compose down -v
 ```
 
 ## Building a local NuGet package
@@ -62,32 +73,11 @@ dotnet pack --configuration Release /p:Version=0.1.0 --output ./nupkg
 To reference the local package from another project, add a local NuGet source:
 
 ```sh
-dotnet nuget add source /path/to/this/repo/nupkg --name LocalTemplateTest
+dotnet nuget add source /path/to/this/repo/nupkg --name LocalNotificationProvidersTest
 ```
 
 Then reference it normally in the consuming project's `.csproj`:
 
 ```xml
-<PackageReference Include="ExampleLibrary" Version="0.1.0" />
+<PackageReference Include="DGates.Identity.NotificationProviders" Version="0.1.0" />
 ```
-
-## Developing without Docker
-
-`ExampleLibrary` has no local-fallback mode — unlike some libraries, `S3NoteStore` doesn't
-ship a non-AWS code path to fall back to, since the point of this example is specifically to
-demonstrate integration testing against a real external dependency in CI.
-
-- **Unit tests still run** — `NoteValidatorTests` doesn't depend on Docker or LocalStack at
-  all.
-- **Integration tests (`Category=Integration`) require LocalStack and can't be skipped or
-  faked.** They exist specifically to verify the real S3 code path; there's no fallback branch
-  to substitute.
-- If you can't run Docker locally (e.g. a nested VM without virtualization passthrough), the
-  more faithful option is pointing `S3NoteStore` at a real, disposable S3 bucket with a narrow
-  IAM policy, rather than trying to stub it out.
-
-This is different from the `LocalJsonFallbackPath` pattern used in
-[`DGates.AwsSecretsManager`](https://github.com/dgates82/DGates.AwsSecretsManager) — that
-fallback exists for *consumers* who want to develop their own app without any AWS dependency
-at all. `ExampleLibrary` doesn't need that, since it's a disposable demonstration, not a
-product meant to support Docker-free consumer development.
