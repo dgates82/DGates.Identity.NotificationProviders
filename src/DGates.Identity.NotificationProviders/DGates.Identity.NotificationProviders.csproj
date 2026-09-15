@@ -28,4 +28,11 @@
       <PackageReference Include="SendGrid" Version="9.29.3" />
       <PackageReference Include="Twilio" Version="7.14.9" />
     </ItemGroup>
+    <ItemGroup>
+      <!-- Roslyn analyzer only — must never flow to consumers of the published package. -->
+      <PackageReference Include="SonarAnalyzer.CSharp" Version="10.34.0.3385">
+        <PrivateAssets>all</PrivateAssets>
+        <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      </PackageReference>
+    </ItemGroup>
 </Project>

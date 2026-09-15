@@ -27,10 +27,10 @@ public class PostMarkEmailSender : IEmailSender
     }
 
     /// <summary>Sends an HTML email via the Postmark API.</summary>
-    public async Task SendEmailAsync(string toEmail, string subject, string message)
+    public async Task SendEmailAsync(string email, string subject, string htmlMessage)
     {
-        _logger.LogDebug($"SendMailAsync | toEmail: {toEmail} | subject: {subject} | message: {message}");
-        _logger.LogDebug($"options: {_options.ToJson()}");
+        _logger.LogDebug("SendMailAsync | toEmail: {Email} | subject: {Subject} | message: {HtmlMessage}", email, subject, htmlMessage);
+        _logger.LogDebug("options: {Options}", _options.ToJson());
 
         var client = string.IsNullOrEmpty(_options.Value.BaseUrlOverride)
             ? new PostmarkClient(_options.Value.ApiKey)
@@ -40,22 +40,22 @@ public class PostMarkEmailSender : IEmailSender
         var msg = new PostmarkMessage
         {
             From = from,
-            To = toEmail,
+            To = email,
             TrackOpens = true,
             Subject = subject,
-            HtmlBody = message
+            HtmlBody = htmlMessage
         };
 
         var response = await client.SendMessageAsync(msg);
 
         if (response.Status == PostmarkStatus.Success)
         {
-            _logger.LogInformation($"Message sent to {toEmail}");
+            _logger.LogInformation("Message sent to {Email}", email);
         }
         else
         {
-            _logger.LogError($"Error sending message to {toEmail}: {response.Message}");
-            throw new InvalidOperationException($"Postmark send failed for {toEmail}: {response.Message}");
+            _logger.LogError("Error sending message to {Email}: {Message}", email, response.Message);
+            throw new InvalidOperationException($"Postmark send failed for {email}: {response.Message}");
         }
     }
 }
