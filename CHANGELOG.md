@@ -17,6 +17,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   `sonar.branch.name` for non-PR triggers, and `SONAR_PROJECT_KEY`/`SONAR_ORG` repo
   variables instead of hardcoded literals.
 
+### Fixed
+- `NuGet/login@v1` pinned to a commit SHA (SonarQube Cloud finding) - was the only real
+  vulnerability from the first full scan. The other (`EnableSsl should be true` on
+  `SmtpEmailSender`) is a false positive - `EnableSsl` is intentionally configurable, off
+  for local dev against Mailpit (no TLS), on for real SMTP.
+
 ## [1.0.0] - 2026-08-04
 
 ### Added
