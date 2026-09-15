@@ -1,5 +1,8 @@
 # DGates.Identity.NotificationProviders
 
+[![CI](https://github.com/dgates82/DGates.Identity.NotificationProviders/actions/workflows/ci.yml/badge.svg)](https://github.com/dgates82/DGates.Identity.NotificationProviders/actions/workflows/ci.yml)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=dgates_identity-notificationproviders&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=dgates_identity-notificationproviders)
+
 Drop-in `IEmailSender`/`ISmsSender` providers for ASP.NET Core Identity. Wire up email or SMS
 delivery for password resets, email confirmation, and two-factor codes with one DI call, no
 hand-rolled sender required.
