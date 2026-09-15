@@ -27,7 +27,7 @@ public class TwilioSmsSender : ISmsSender
     /// <summary>Sends an SMS via Twilio, returning the Twilio message SID.</summary>
     public async Task<string> SendSmsAsync(string number, string message, CancellationToken cancellationToken = default)
     {
-        _logger.LogDebug($"SendSmsAsync | number: {number} | message: {message}");
+        _logger.LogDebug("SendSmsAsync | number: {Number} | message: {Message}", number, message);
 
         // The Twilio SDK has no CancellationToken overload, and MessageResource.CreateAsync
         // has no way to cancel a request already in flight - this only avoids starting one
@@ -49,7 +49,7 @@ public class TwilioSmsSender : ISmsSender
             client: client
         );
 
-        _logger.LogInformation($"Message sent to {number}, Sid: {result.Sid}");
+        _logger.LogInformation("Message sent to {Number}, Sid: {Sid}", number, result.Sid);
 
         return result.Sid;
     }

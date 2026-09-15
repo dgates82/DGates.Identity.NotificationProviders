@@ -29,16 +29,16 @@ namespace DGates.Identity.NotificationProviders.Providers.Email
         }
 
         /// <summary>Sends an HTML email via SMTP.</summary>
-        public async Task SendEmailAsync(string toEmail, string subject, string message)
+        public async Task SendEmailAsync(string email, string subject, string htmlMessage)
         {
-            _logger.LogDebug($"SendMailAsync | toEmail: {toEmail} | subject: {subject} | message: {message}");
-            _logger.LogDebug($"options: {_options.ToJson()}");
+            _logger.LogDebug("SendMailAsync | toEmail: {Email} | subject: {Subject} | message: {HtmlMessage}", email, subject, htmlMessage);
+            _logger.LogDebug("options: {Options}", _options.ToJson());
 
             var msg = new MailMessage();
             msg.From = new MailAddress(_options.Value.FromAddress);
             msg.Subject = subject;
-            msg.Body = message;
-            msg.To.Add(toEmail);
+            msg.Body = htmlMessage;
+            msg.To.Add(email);
             msg.IsBodyHtml = true;
 
             using var smtpClient = new SmtpClient
@@ -56,7 +56,7 @@ namespace DGates.Identity.NotificationProviders.Providers.Email
 
             await smtpClient.SendMailAsync(msg);
 
-            _logger.LogInformation($"Message sent to {toEmail}");
+            _logger.LogInformation("Message sent to {Email}", email);
 
         }
 

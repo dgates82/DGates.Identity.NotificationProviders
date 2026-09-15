@@ -22,6 +22,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   vulnerability from the first full scan. The other (`EnableSsl should be true` on
   `SmtpEmailSender`) is a false positive - `EnableSsl` is intentionally configurable, off
   for local dev against Mailpit (no TLS), on for real SMTP.
+- `SendEmailAsync` parameter names in `SmtpEmailSender`, `SendGridEmailSender`,
+  `PostMarkEmailSender`, and `OverrideRecipientEmailSender` now match the `IEmailSender`
+  interface declaration (SonarQube S927), and interpolated-string logging calls in the email
+  and SMS senders now use structured/parameterized logging (SonarQube S2629). The parameter
+  renames are source-level only - they affect direct-named-argument callers of the concrete
+  classes, not interface-typed consumers or binary compatibility - so this does not warrant a
+  major version bump.
 
 ## [1.0.0] - 2026-08-04
 
