@@ -20,14 +20,14 @@ public class OverrideRecipientEmailSender : IEmailSender
     }
 
     /// <inheritdoc />
-    public Task SendEmailAsync(string toEmail, string subject, string message)
+    public Task SendEmailAsync(string email, string subject, string htmlMessage)
     {
         if (string.IsNullOrEmpty(_overrideRecipient))
         {
-            return _inner.SendEmailAsync(toEmail, subject, message);
+            return _inner.SendEmailAsync(email, subject, htmlMessage);
         }
 
-        var finalSubject = $"{subject} - Original Recipient: {toEmail}";
-        return _inner.SendEmailAsync(_overrideRecipient, finalSubject, message);
+        var finalSubject = $"{subject} - Original Recipient: {email}";
+        return _inner.SendEmailAsync(_overrideRecipient, finalSubject, htmlMessage);
     }
 }

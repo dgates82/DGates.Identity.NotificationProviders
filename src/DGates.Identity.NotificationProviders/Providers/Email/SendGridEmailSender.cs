@@ -32,10 +32,10 @@ namespace DGates.Identity.NotificationProviders.Providers.Email
 
 
         /// <summary>Sends an HTML email via the SendGrid API.</summary>
-        public async Task SendEmailAsync(string toEmail, string subject, string message)
+        public async Task SendEmailAsync(string email, string subject, string htmlMessage)
         {
-            _logger.LogDebug($"SendMailAsync | toEmail: {toEmail} | subject: {subject} | message: {message}");
-            _logger.LogDebug($"options: {_options.ToJson()}");
+            _logger.LogDebug("SendMailAsync | toEmail: {Email} | subject: {Subject} | message: {HtmlMessage}", email, subject, htmlMessage);
+            _logger.LogDebug("options: {Options}", _options.ToJson());
 
             var apiKey = _options.Value.ApiKey;
             var client = string.IsNullOrEmpty(_options.Value.BaseUrlOverride)
@@ -43,19 +43,19 @@ namespace DGates.Identity.NotificationProviders.Providers.Email
                 : new SendGridClient(apiKey, host: _options.Value.BaseUrlOverride);
             var from = new EmailAddress(_options.Value.FromAddress, _options.Value.FromName);
 
-            var to = new EmailAddress(toEmail);
-            var msg = MailHelper.CreateSingleEmail(from, to, subject, "", message);
+            var to = new EmailAddress(email);
+            var msg = MailHelper.CreateSingleEmail(from, to, subject, "", htmlMessage);
             var response = await client.SendEmailAsync(msg);
 
             if (response.IsSuccessStatusCode)
             {
-                _logger.LogInformation($"Message sent to {toEmail}");
+                _logger.LogInformation("Message sent to {Email}", email);
             }
             else
             {
                 var body = await response.Body.ReadAsStringAsync();
-                _logger.LogError($"Error sending message to {toEmail}: {response.StatusCode} {body}");
-                throw new InvalidOperationException($"SendGrid send failed for {toEmail}: {response.StatusCode} {body}");
+                _logger.LogError("Error sending message to {Email}: {StatusCode} {Body}", email, response.StatusCode, body);
+                throw new InvalidOperationException($"SendGrid send failed for {email}: {response.StatusCode} {body}");
             }
 
         }

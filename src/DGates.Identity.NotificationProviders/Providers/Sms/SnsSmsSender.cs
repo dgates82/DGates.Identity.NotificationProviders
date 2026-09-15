@@ -28,7 +28,7 @@ public class SnsSmsSender : ISmsSender
     /// <summary>Sends an SMS via AWS SNS, returning the SNS message ID.</summary>
     public async Task<string> SendSmsAsync(string number, string message, CancellationToken cancellationToken = default)
     {
-        _logger.LogDebug($"SendSmsAsync | number: {number} | message: {message}");
+        _logger.LogDebug("SendSmsAsync | number: {Number} | message: {Message}", number, message);
 
         using var client = CreateClient();
 
@@ -41,7 +41,7 @@ public class SnsSmsSender : ISmsSender
 
         var response = await client.PublishAsync(request, cancellationToken);
 
-        _logger.LogInformation($"Message sent to {number}, MessageId: {response.MessageId}");
+        _logger.LogInformation("Message sent to {Number}, MessageId: {MessageId}", number, response.MessageId);
 
         return response.MessageId;
     }
