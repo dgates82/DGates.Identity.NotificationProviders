@@ -13,6 +13,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   exclusions cover `bin`/`obj`. Runs on push to `main`/`release/**`, on PRs, weekly on a
   schedule, and via `workflow_dispatch`.
 
+### Changed
+- README restructured — a live-demo callout, a grouped feature list, a `MapIdentityApi`
+  compatibility note, a providers-at-a-glance table, and a package-ecosystem table; full
+  per-provider configuration moved to `docs/CONFIGURATION.md`.
+
 ## [1.1.0] - 2026-09-15
 
 ### Added
