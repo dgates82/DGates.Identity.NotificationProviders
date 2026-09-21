@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- CodeQL static analysis (`.github/workflows/codeql.yml`), analyzing the `csharp`
+  language via GitHub's Advanced Setup — run independently of SonarQube Cloud. Path
+  exclusions cover `bin`/`obj`. Runs on push to `main`/`release/**`, on PRs, weekly on a
+  schedule, and via `workflow_dispatch`.
+
 ## [1.1.0] - 2026-09-15
 
 ### Added
