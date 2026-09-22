@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.1.1] - 2026-09-22
+
 ### Added
 - CodeQL static analysis (`.github/workflows/codeql.yml`), analyzing the `csharp`
   language via GitHub's Advanced Setup — run independently of SonarQube Cloud. Path
@@ -17,6 +19,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - README restructured — a live-demo callout, a grouped feature list, a `MapIdentityApi`
   compatibility note, a providers-at-a-glance table, and a package-ecosystem table; full
   per-provider configuration moved to `docs/CONFIGURATION.md`.
+
+### Fixed
+- Recipient email addresses and phone numbers are now masked before being logged, and no
+  longer appear in exception messages thrown on send failure. Debug-level logging no
+  longer includes the email/SMS message body or subject line. Masking is currently
+  hardcoded; making it configurable is tracked in
+  [#18](https://github.com/dgates82/DGates.Identity.NotificationProviders/issues/18).
 
 ## [1.1.0] - 2026-09-15
 
