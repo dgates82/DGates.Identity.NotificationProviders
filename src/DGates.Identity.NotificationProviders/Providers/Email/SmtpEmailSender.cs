@@ -31,7 +31,6 @@ namespace DGates.Identity.NotificationProviders.Providers.Email
         /// <summary>Sends an HTML email via SMTP.</summary>
         public async Task SendEmailAsync(string email, string subject, string htmlMessage)
         {
-            // subject may carry PII - see OverrideRecipientEmailSender.
             _logger.LogDebug("SendMailAsync called");
             _logger.LogDebug("options: {Options}", _options.ToJson());
 
