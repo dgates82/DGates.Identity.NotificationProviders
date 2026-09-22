@@ -21,7 +21,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - Recipient email addresses and phone numbers are now masked before being logged, and no
   longer appear in exception messages thrown on send failure. Debug-level logging no
-  longer includes the full email/SMS message body.
+  longer includes the full email/SMS message body. Masking is currently hardcoded; making
+  it configurable is tracked in
+  [#18](https://github.com/dgates82/DGates.Identity.NotificationProviders/issues/18).
 
 ## [1.1.0] - 2026-09-15
 
