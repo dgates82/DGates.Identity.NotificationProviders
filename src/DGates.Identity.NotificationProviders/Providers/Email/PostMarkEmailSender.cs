@@ -29,7 +29,7 @@ public class PostMarkEmailSender : IEmailSender
     /// <summary>Sends an HTML email via the Postmark API.</summary>
     public async Task SendEmailAsync(string email, string subject, string htmlMessage)
     {
-        _logger.LogDebug("SendMailAsync | toEmail: {Email} | subject: {Subject} | message: {HtmlMessage}", email, subject, htmlMessage);
+        _logger.LogDebug("SendMailAsync | subject: {Subject}", subject);
         _logger.LogDebug("options: {Options}", _options.ToJson());
 
         var client = string.IsNullOrEmpty(_options.Value.BaseUrlOverride)
@@ -50,12 +50,12 @@ public class PostMarkEmailSender : IEmailSender
 
         if (response.Status == PostmarkStatus.Success)
         {
-            _logger.LogInformation("Message sent to {Email}", email);
+            _logger.LogInformation("Message sent to {Email}", email.MaskEmail());
         }
         else
         {
-            _logger.LogError("Error sending message to {Email}: {Message}", email, response.Message);
-            throw new InvalidOperationException($"Postmark send failed for {email}: {response.Message}");
+            _logger.LogError("Error sending message to {Email}: {Message}", email.MaskEmail(), response.Message);
+            throw new InvalidOperationException($"Postmark send failed: {response.Message}");
         }
     }
 }

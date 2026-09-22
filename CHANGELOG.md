@@ -18,6 +18,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   compatibility note, a providers-at-a-glance table, and a package-ecosystem table; full
   per-provider configuration moved to `docs/CONFIGURATION.md`.
 
+### Fixed
+- Recipient email addresses and phone numbers are now masked before being logged, and no
+  longer appear in exception messages thrown on send failure. Debug-level logging no
+  longer includes the full email/SMS message body.
+
 ## [1.1.0] - 2026-09-15
 
 ### Added

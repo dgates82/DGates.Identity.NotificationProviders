@@ -34,7 +34,7 @@ namespace DGates.Identity.NotificationProviders.Providers.Email
         /// <summary>Sends an HTML email via the SendGrid API.</summary>
         public async Task SendEmailAsync(string email, string subject, string htmlMessage)
         {
-            _logger.LogDebug("SendMailAsync | toEmail: {Email} | subject: {Subject} | message: {HtmlMessage}", email, subject, htmlMessage);
+            _logger.LogDebug("SendMailAsync | subject: {Subject}", subject);
             _logger.LogDebug("options: {Options}", _options.ToJson());
 
             var apiKey = _options.Value.ApiKey;
@@ -49,13 +49,13 @@ namespace DGates.Identity.NotificationProviders.Providers.Email
 
             if (response.IsSuccessStatusCode)
             {
-                _logger.LogInformation("Message sent to {Email}", email);
+                _logger.LogInformation("Message sent to {Email}", email.MaskEmail());
             }
             else
             {
                 var body = await response.Body.ReadAsStringAsync();
-                _logger.LogError("Error sending message to {Email}: {StatusCode} {Body}", email, response.StatusCode, body);
-                throw new InvalidOperationException($"SendGrid send failed for {email}: {response.StatusCode} {body}");
+                _logger.LogError("Error sending message to {Email}: {StatusCode} {Body}", email.MaskEmail(), response.StatusCode, body);
+                throw new InvalidOperationException($"SendGrid send failed: {response.StatusCode} {body}");
             }
 
         }
