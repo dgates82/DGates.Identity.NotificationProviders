@@ -34,7 +34,8 @@ namespace DGates.Identity.NotificationProviders.Providers.Email
         /// <summary>Sends an HTML email via the SendGrid API.</summary>
         public async Task SendEmailAsync(string email, string subject, string htmlMessage)
         {
-            _logger.LogDebug("SendMailAsync | subject: {Subject}", subject);
+            // subject isn't safe to log - OverrideRecipientEmailSender can embed the original recipient's email in it.
+            _logger.LogDebug("SendMailAsync called");
             _logger.LogDebug("options: {Options}", _options.ToJson());
 
             var apiKey = _options.Value.ApiKey;
