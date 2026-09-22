@@ -3,6 +3,9 @@ namespace DGates.Identity.NotificationProviders.ExtensionMethods
     /// <summary>Extension methods for masking recipient identifiers (email addresses, phone numbers) before they're logged.</summary>
     public static class MaskingExtensions
     {
+        private const int PhonePrefixLength = 5;
+        private const int PhoneSuffixLength = 4;
+
         /// <summary>
         /// Masks all but the first character of the local part, e.g. "jane.doe@example.com" ->
         /// "j***@example.com". Returns the input unchanged if it doesn't look like an email address.
@@ -30,12 +33,12 @@ namespace DGates.Identity.NotificationProviders.ExtensionMethods
         /// </summary>
         public static string MaskPhone(this string number)
         {
-            if (string.IsNullOrEmpty(number) || number.Length <= 9)
+            if (string.IsNullOrEmpty(number) || number.Length <= PhonePrefixLength + PhoneSuffixLength)
             {
                 return number;
             }
 
-            return $"{number[..5]}***{number[^4..]}";
+            return $"{number[..PhonePrefixLength]}***{number[^PhoneSuffixLength..]}";
         }
     }
 }
