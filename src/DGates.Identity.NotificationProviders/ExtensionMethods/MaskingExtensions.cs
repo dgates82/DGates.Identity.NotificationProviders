@@ -28,14 +28,25 @@ namespace DGates.Identity.NotificationProviders.ExtensionMethods
 
         /// <summary>
         /// Masks the middle of a phone number, keeping the first five and last four characters,
-        /// e.g. "+15555550100" -> "+1555***0100". Returns the input unchanged if it's too short
-        /// to mask meaningfully.
+        /// e.g. "+15555550100" -> "+1555***0100". Shorter input still gets masked - down to just
+        /// the last four characters, or fully redacted if even that would expose too much -
+        /// never returned unchanged.
         /// </summary>
         public static string MaskPhone(this string number)
         {
-            if (string.IsNullOrEmpty(number) || number.Length <= PhonePrefixLength + PhoneSuffixLength)
+            if (string.IsNullOrEmpty(number))
             {
                 return number;
+            }
+
+            if (number.Length <= PhoneSuffixLength)
+            {
+                return "***";
+            }
+
+            if (number.Length <= PhonePrefixLength + PhoneSuffixLength)
+            {
+                return $"***{number[^PhoneSuffixLength..]}";
             }
 
             return $"{number[..PhonePrefixLength]}***{number[^PhoneSuffixLength..]}";
