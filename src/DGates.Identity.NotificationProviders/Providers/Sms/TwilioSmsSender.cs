@@ -1,4 +1,5 @@
 using DGates.Identity.NotificationProviders.Abstractions;
+using DGates.Identity.NotificationProviders.ExtensionMethods;
 using DGates.Identity.NotificationProviders.Options.Sms;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -27,7 +28,7 @@ public class TwilioSmsSender : ISmsSender
     /// <summary>Sends an SMS via Twilio, returning the Twilio message SID.</summary>
     public async Task<string> SendSmsAsync(string number, string message, CancellationToken cancellationToken = default)
     {
-        _logger.LogDebug("SendSmsAsync | number: {Number} | message: {Message}", number, message);
+        _logger.LogDebug("SendSmsAsync | messageLength: {MessageLength}", message.Length);
 
         // The Twilio SDK has no CancellationToken overload, and MessageResource.CreateAsync
         // has no way to cancel a request already in flight - this only avoids starting one
@@ -49,7 +50,7 @@ public class TwilioSmsSender : ISmsSender
             client: client
         );
 
-        _logger.LogInformation("Message sent to {Number}, Sid: {Sid}", number, result.Sid);
+        _logger.LogInformation("Message sent to {Number}, Sid: {Sid}", number.MaskPhone(), result.Sid);
 
         return result.Sid;
     }
