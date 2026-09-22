@@ -29,7 +29,7 @@ public class PostMarkEmailSender : IEmailSender
     /// <summary>Sends an HTML email via the Postmark API.</summary>
     public async Task SendEmailAsync(string email, string subject, string htmlMessage)
     {
-        // subject isn't safe to log - OverrideRecipientEmailSender can embed the original recipient's email in it.
+        // subject may carry PII - see OverrideRecipientEmailSender.
         _logger.LogDebug("SendMailAsync called");
         _logger.LogDebug("options: {Options}", _options.ToJson());
 
