@@ -140,9 +140,6 @@ texting real users.
 
 angular-dotnet-auth-template → DGates.Identity.Jwt2Fa → DGates.Identity.NotificationProviders → dgates-mock-servers (in dev)
 
-This package doesn't always track the same version as the packages that depend on it — check
-each repo's own `PackageReference` for what it actually pins.
-
 More from dgates82: [DGates.AwsSecretsManager](https://github.com/dgates82/DGates.AwsSecretsManager)
 and [dotnet-nuget-release-template](https://github.com/dgates82/dotnet-nuget-release-template).
 
